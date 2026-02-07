@@ -1,24 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Router from "./Router/Router";
+import { JsonFile } from "./Router/JsonFile";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
+  const [employees, setEmployees] = useState(JsonFile());
+
+  const addEmployee = (emp) => {
+    setEmployees(prev => [
+      ...prev,
+      { id: prev.length + 1, ...emp }
+    ]);
+    toast.success("Employee added ✅");
+  };
+
+    const editEmployee = (id, updatedEmp) => {
+    setEmployees(
+      employees.map(emp =>
+        emp.id === id ? { ...emp, ...updatedEmp } : emp
+      )
+    );
+  toast.info("Employee updated ✏️");
+  };
+
+  const deleteEmployee = (id) => {
+    setEmployees(prev => prev.filter(emp => emp.id !== id));
+    toast.error("Employee deleted ❌");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ToastContainer />
+      <Router
+        employees={employees}
+        addEmployee={addEmployee}
+          editEmployee={editEmployee}
+        deleteEmployee={deleteEmployee}
+      />
+    </>
   );
 }
 
